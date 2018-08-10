@@ -5,7 +5,6 @@ import { Component } from "@angular/core";
     <div>
         <button *ngIf="!showForm" (click) = "toogleForm()">+</button>
         <div *ngIf="showForm">
-            
             <input [(ngModel)] ="en" placeholder="english word"/><br/>
             <input [(ngModel)] ="def" placeholder="definition"/>
             <div>
@@ -13,7 +12,14 @@ import { Component } from "@angular/core";
                 <button (click) = "toogleForm()">Cancle </button>
             </div>
         </div>
-        <div *ngFor= " let w of words">
+        <div>
+            <select [(ngModel)] ="filter">
+                <option value="SHOW_ALL">SHOW ALL</option>
+                <option value="SHOW_FORGOT">SHOW_FORGOT</option>
+                <option value="SHOW_REMEMBER">SHOW_REMEMBER</option>
+            </select>
+        </div>
+        <div *ngFor= "let w of getFilterWord()">
             <h2>{{w.en}}</h2>
             <p>{{w.remember ? "*****" : w.def}}</p>
             <div>
@@ -57,6 +63,13 @@ export class WordsComponent {
   en = "";
   def = "";
   showForm= false;
+  filter = "SHOW_FORGOT";
+  getFilterWord = () => {
+      const {filter, words} = this;
+      if(filter === "SHOW_FORGOT") return words.filter(w=>!w.remember)
+      if(filter === "SHOW_REMEMBER") return words.filter(w=>w.remember)
+      return words;
+  }
   toogleForm = () =>{
       this.showForm = !this.showForm;
   }
